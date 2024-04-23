@@ -1,4 +1,4 @@
-function [d,B] = ShortPathBetw(s,A)
+function [d,B] = ShortPathBetw(s,A,varargin)
 %SHORTPATHBETW is a function that computes the short path betweenness scores
 %of all edges in a network starting from a point we will call "s".
 % A must be an adjacency matrix representing the network the user wants to
@@ -23,6 +23,13 @@ l = 1;
 k = 0;
 q(i) = s;
 ts = zeros(1,n);
+if ~isempty(varargin) && order(n) > 1
+    b = 1:n;
+    a = randperm(n,10^(ceil(order(n)/2)));
+    b(a) = [];
+    A(b,b) = 0; 
+else
+end
 while i ~= j
     nb = A(q(i),:); % connections of vertex q(i) 
     nbindx = find(nb ~= 0); % neighbor's indices of vertex q(i)
@@ -32,9 +39,9 @@ while i ~= j
     for k=1:length(nbindx)
         if d(nbindx(k)) == -1
             d(nbindx(k)) = di + 1;
-            w(nbindx(k)) = A(q(i),nbindx(k))*w(q(i)); % here we multiply by A(i,k) to take into account the case when the adjacency matrix is weighted
-            q(j) = nbindx(k);
-            j = j+1;
+            w(nbindx(k)) = w(q(i))/A(q(i),nbindx(k)); % here we divide by A(i,k) to take into account the case when the adjacency matrix is weighted.
+            q(j) = nbindx(k);                         % In that case the weight of each edge represents how much related are two vertices and so the 
+            j = j+1;                                  % weight in Short-Path-Betweenness must be less the more connected two vertices are.
         elseif d(nbindx(k)) == d(q(i)) + 1
             w(nbindx(k)) = w(nbindx(k)) + w(q(i));
         end

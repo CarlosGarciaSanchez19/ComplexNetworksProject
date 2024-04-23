@@ -14,7 +14,7 @@ while ~isempty(Adiv(Adiv ~= 0))
     %ebsum = zeros(m,1);
     Bsum = zeros(n);
     for j = 1:n
-        [~,B] = ShortPathBetw(j,Adiv);
+        [~,B] = ShortPathBetw(j,Adiv,true);
         %ebsum = ebsum + eb;
         Bsum = Bsum + B;
     end
@@ -37,7 +37,20 @@ while ~isempty(Adiv(Adiv ~= 0))
         Dendrogram{l} = q;
         l = l + 1;
     end
-    Adiv(Bsum == max(max(Bsum))) = 0;
+    if order(n) > 1
+        Bmax = sort(max(Bsum),'descend');
+        Bmax = Bmax(Bmax ~= 0);
+        r = 10^(ceil(order(length(Bmax))/2));
+        Bdelete = zeros(n,"logical");
+        for p = 1:round(length(Bmax)/r)
+            BdeleteP = Bsum == Bmax(p);
+            Bdelete = Bdelete + BdeleteP;
+        end
+        Bdelete = logical(Bdelete);
+        Adiv(Bdelete) = 0;
+    else
+        Adiv(Bsum == max(max(Bsum))) = 0;
+    end
     i = i + 1;
 end
 Dendrogram = Dendrogram(1:l-1);

@@ -3,7 +3,7 @@ function [Q,e] = ModComp(q,A)
 % groups (not fixed number of groups) and the corresponding adjacency matrix
 % and returns the corresponding modularity value.
 e = zeros(max(q));
-m = ceil(sum(A(A ~= 0)));
+m = length(A(A ~= 0));
 for i = 1:length(A)
     q_nb = q(A(i,:) ~= 0);
     for j = 1:length(q_nb)
