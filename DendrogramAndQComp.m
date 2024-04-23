@@ -42,7 +42,7 @@ while ~isempty(Adiv(Adiv ~= 0))
         Bmax = Bmax(Bmax ~= 0);
         r = 10^(ceil(order(length(Bmax))/2));
         Bdelete = zeros(n,"logical");
-        for p = 1:round(length(Bmax)/r)
+        for p = 1:int8(round(length(Bmax)/r))
             BdeleteP = Bsum == Bmax(p);
             Bdelete = Bdelete + BdeleteP;
         end
